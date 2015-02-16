@@ -29,12 +29,18 @@ def download_n_users(n_users, out_filename):
     num_workers = cpu_count()*4
     num_per_worker = n_users//num_workers
 
+    extras = n_users - (num_per_worker * num_workers) # Make up for integer division
+
     # Create a few jobs and start them
     parent_conns = []
     for i in range(num_workers):
+        num_for_this_worker = num_per_worker
+        if i == 0:
+            num_for_this_worker += extras
+
         parent_conn, child_conn = Pipe()
         parent_conns.append(parent_conn)
-        process = Process(target=download_worker, args=(num_per_worker, child_conn))
+        process = Process(target=download_worker, args=(num_for_this_worker, child_conn))
         process.start()
 
     # Collect data from all processes via pipes
