@@ -20,7 +20,6 @@ def download_worker(n_users, conn):
             error = r.text[-1] == '}' 
         users.append(r.text)
 
-
     # Write this portion of the users to the main thread
     conn.send(users)
     conn.close()
@@ -66,7 +65,7 @@ def usage():
 if __name__ == '__main__':
     if len(argv) != 3:
         usage()
-        exit(0)
+        exit(1)
 
     n_users = int(argv[1])
     out_filename = argv[2]
